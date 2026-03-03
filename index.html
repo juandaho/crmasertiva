@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0078d4">
+  <meta name="description" content="Asertiva Digital - Dynamics 365 CRM">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Asertiva CRM">
+  <title>Asertiva CRM</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --ms-blue: #0078d4;
+      --ms-blue-dark: #005a9e;
+      --ms-blue-light: #2b88d8;
+      --ms-blue-hover: #106ebe;
+      --bg: #f3f2f1;
+      --white: #ffffff;
+      --text: #323130;
+      --text-light: #605e5c;
+      --border: #edebe9;
+      --shadow: 0 8px 32px rgba(0,0,0,0.12);
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #0078d4 0%, #005a9e 50%, #003e75 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Animated background particles */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(0,120,212,0.3) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Floating grid lines */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+    }
+
+    .login-container {
+      background: var(--white);
+      border-radius: 4px;
+      padding: 44px 44px 36px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: var(--shadow);
+      position: relative;
+      z-index: 1;
+      animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #0078d4, #005a9e);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-icon svg {
+      width: 28px;
+      height: 28px;
+      fill: white;
+    }
+
+    .logo-text h1 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .logo-text p {
+      font-size: 12px;
+      color: var(--text-light);
+      font-weight: 400;
+    }
+
+    .welcome-text {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .welcome-sub {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 28px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--white);
+      border: 1px solid #8a8886;
+      border-radius: 2px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus {
+      border-color: var(--ms-blue);
+      border-width: 2px;
+      padding: 7px 11px;
+    }
+
+    input::placeholder { color: #a19f9d; }
+
+    .domain-suffix {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 13px;
+      color: var(--text-light);
+      pointer-events: none;
+    }
+
+    input[type="text"].with-suffix {
+      padding-right: 110px;
+    }
+
+    .sign-in-btn {
+      width: 100%;
+      padding: 8px 20px;
+      margin-top: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--white);
+      background: var(--ms-blue);
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 36px;
+    }
+
+    .sign-in-btn:hover { background: var(--ms-blue-dark); }
+    .sign-in-btn:active { background: #003e75; }
+
+    .sign-in-btn .spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    .sign-in-btn.loading .spinner { display: block; }
+    .sign-in-btn.loading .btn-text { display: none; }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0 0;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .divider span {
+      font-size: 12px;
+      color: var(--text-light);
+      white-space: nowrap;
+    }
+
+    .footer {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-light);
+    }
+
+    .ms-logo {
+      display: flex;
+      gap: 1px;
+    }
+    .ms-logo span {
+      width: 8px;
+      height: 8px;
+      display: block;
+    }
+    .ms-logo span:nth-child(1) { background: #f25022; }
+    .ms-logo span:nth-child(2) { background: #7fba00; }
+    .ms-logo span:nth-child(3) { background: #00a4ef; }
+    .ms-logo span:nth-child(4) { background: #ffb900; }
+    .ms-logo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 1px;
+      width: 17px;
+      height: 17px;
+    }
+
+    .version {
+      font-size: 11px;
+      color: #c8c6c4;
+    }
+
+    /* Error message */
+    .error-msg {
+      display: none;
+      background: #fde7e9;
+      border-left: 3px solid #c72a1c;
+      padding: 10px 12px;
+      font-size: 13px;
+      color: #c72a1c;
+      border-radius: 0 2px 2px 0;
+      margin-top: 8px;
+    }
+    .error-msg.show { display: block; }
+
+    /* The iframe overlay (loaded state) */
+    #crm-frame-container {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: white;
+      flex-direction: column;
+    }
+    #crm-frame-container.visible {
+      display: flex;
+    }
+
+    .crm-topbar {
+      background: var(--ms-blue);
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      flex-shrink: 0;
+    }
+
+    .crm-topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .crm-topbar-title {
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .crm-topbar-sub {
+      color: rgba(255,255,255,0.7);
+      font-size: 12px;
+    }
+
+    .topbar-btn {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: white;
+      padding: 5px 12px;
+      border-radius: 2px;
+      font-size: 12px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .topbar-btn:hover { background: rgba(255,255,255,0.25); }
+
+    #crm-iframe {
+      flex: 1;
+      border: none;
+      width: 100%;
+    }
+
+    /* Loading overlay for iframe */
+    .iframe-loading {
+      position: absolute;
+      inset: 0;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      z-index: 10;
+    }
+
+    .iframe-loading.hidden { display: none; }
+
+    .loading-spinner-large {
+      width: 48px;
+      height: 48px;
+      border: 3px solid #edebe9;
+      border-top-color: var(--ms-blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .loading-text {
+      color: var(--text-light);
+      font-size: 14px;
+    }
+
+    /* Install prompt */
+    .install-banner {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--ms-blue);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 4px;
+      font-size: 13px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      z-index: 999;
+      align-items: center;
+      gap: 12px;
+      max-width: 380px;
+      width: calc(100% - 40px);
+      animation: slideUpBanner 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .install-banner.show { display: flex; }
+
+    @keyframes slideUpBanner {
+      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    .install-banner-text { flex: 1; }
+    .install-banner-text strong { display: block; margin-bottom: 2px; }
+    .install-banner-text span { font-size: 11px; opacity: 0.8; }
+
+    .install-btn {
+      background: white;
+      color: var(--ms-blue);
+      border: none;
+      padding: 7px 14px;
+      border-radius: 2px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .close-banner {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 2px;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Screen -->
+  <div class="login-container" id="login-screen">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-1 14H5c-.55 0-1-.45-1-1V7c0-.55.45-1 1-1h14c.55 0 1 .45 1 1v10c0 .55-.45 1-1 1zm-7-9.5L7.5 13H11v4h2v-4h3.5L12 8.5z"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1>Asertiva Digital</h1>
+        <p>Dynamics 365 CRM</p>
+      </div>
+    </div>
+
+    <p class="welcome-text">Iniciar sesión</p>
+    <p class="welcome-sub">Usa tu cuenta corporativa <strong>@asertiva.co</strong></p>
+
+    <div class="form-group">
+      <label for="username">Usuario</label>
+      <div class="input-wrapper">
+        <input 
+          type="text" 
+          id="username" 
+          class="with-suffix"
+          placeholder="tunombre" 
+          autocomplete="username"
+          autocapitalize="none"
+          spellcheck="false"
+        >
+        <span class="domain-suffix">@asertiva.co</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Contraseña</label>
+      <input 
+        type="password" 
+        id="password" 
+        placeholder="Contraseña"
+        autocomplete="current-password"
+      >
+    </div>
+
+    <div class="error-msg" id="error-msg">
+      Usuario o contraseña incorrectos. Verifica tus datos.
+    </div>
+
+    <button class="sign-in-btn" id="sign-in-btn" onclick="doLogin()">
+      <div class="spinner"></div>
+      <span class="btn-text">Iniciar sesión</span>
+    </button>
+
+    <div class="footer">
+      <div class="footer-logo">
+        <div class="ms-logo">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        Microsoft Dynamics 365
+      </div>
+      <span class="version">v2.0</span>
+    </div>
+  </div>
+
+  <!-- CRM Frame (post-login) -->
+  <div id="crm-frame-container">
+    <div class="crm-topbar">
+      <div class="crm-topbar-left">
+        <div class="ms-logo" style="width:20px;height:20px;">
+          <span style="background:#f25022;width:9px;height:9px;display:block;"></span>
+          <span style="background:#7fba00;width:9px;height:9px;display:block;"></span>
+          <span style="background:#00a4ef;width:9px;height:9px;display:block;"></span>
+          <span style="background:#ffb900;width:9px;height:9px;display:block;"></span>
+        </div>
+        <div>
+          <div class="crm-topbar-title">Asertiva CRM</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="topbar-btn" onclick="openExternal()">↗ Abrir en pestaña</button>
+        <button class="topbar-btn" onclick="logout()">Cerrar sesión</button>
+      </div>
+    </div>
+
+    <div style="position:relative;flex:1;">
+      <div class="iframe-loading" id="iframe-loading">
+        <div class="loading-spinner-large"></div>
+        <div class="loading-text">Cargando Dynamics 365...</div>
+      </div>
+      <iframe 
+        id="crm-iframe" 
+        src="about:blank"
+        allow="fullscreen"
+        onload="iframeLoaded()"
+      ></iframe>
+    </div>
+  </div>
+
+  <!-- Install Banner -->
+  <div class="install-banner" id="install-banner">
+    <div class="install-banner-text">
+      <strong>Instalar Asertiva CRM</strong>
+      <span>Accede como app desde tu escritorio</span>
+    </div>
+    <button class="install-btn" id="install-btn" onclick="installApp()">Instalar</button>
+    <button class="close-banner" onclick="hideBanner()">✕</button>
+  </div>
+
+  <script>
+    const CRM_URL = 'https://org45d1ff14.crm2.dynamics.com/main.aspx?appid=e1429753-4410-f111-8342-6045bd3b9ec0&forceUCI=1&pagetype=entitylist&etn=account&viewid=fb4b3393-d711-f111-8342-7ced8da8d52d&viewType=4230';
+    const MS_LOGIN = 'https://login.microsoftonline.com/';
+    const DOMAIN = '@asertiva.co';
+
+    let deferredInstallPrompt = null;
+
+    // Capture PWA install event
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredInstallPrompt = e;
+      document.getElementById('install-banner').classList.add('show');
+    });
+
+    window.addEventListener('appinstalled', () => {
+      hideBanner();
+    });
+
+    function hideBanner() {
+      document.getElementById('install-banner').classList.remove('show');
+    }
+
+    async function installApp() {
+      if (deferredInstallPrompt) {
+        deferredInstallPrompt.prompt();
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        hideBanner();
+      }
+    }
+
+    function openExternal() {
+      window.open(CRM_URL, '_blank');
+    }
+
+    function logout() {
+      document.getElementById('crm-frame-container').classList.remove('visible');
+      document.getElementById('login-screen').style.display = 'flex';
+      document.getElementById('crm-iframe').src = 'about:blank';
+      document.getElementById('password').value = '';
+      document.getElementById('error-msg').classList.remove('show');
+    }
+
+    function iframeLoaded() {
+      const iframe = document.getElementById('crm-iframe');
+      if (iframe.src !== 'about:blank') {
+        document.getElementById('iframe-loading').classList.add('hidden');
+      }
+    }
+
+    function doLogin() {
+      const userInput = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const btn = document.getElementById('sign-in-btn');
+      const errorMsg = document.getElementById('error-msg');
+
+      if (!userInput || !password) {
+        errorMsg.textContent = 'Por favor ingresa usuario y contraseña.';
+        errorMsg.classList.add('show');
+        return;
+      }
+
+      // Build full email
+      const email = userInput.includes('@') ? userInput : userInput + DOMAIN;
+
+      // Validate email format
+      if (!email.includes('@asertiva.co') && !email.includes('@asertivadigital')) {
+        errorMsg.textContent = 'Usa tu cuenta @asertiva.co para iniciar sesión.';
+        errorMsg.classList.add('show');
+        return;
+      }
+
+      errorMsg.classList.remove('show');
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      // Store credentials for the session (in-memory only)
+      sessionStorage.setItem('crm_user', email);
+
+      // The actual login happens inside the iframe via Microsoft's SSO
+      // We navigate to Dynamics 365 which will redirect to MS login
+      // then redirect back after auth
+      setTimeout(() => {
+        const container = document.getElementById('crm-frame-container');
+        const iframe = document.getElementById('crm-iframe');
+        const loading = document.getElementById('iframe-loading');
+        const loginScreen = document.getElementById('login-screen');
+
+        loginScreen.style.display = 'none';
+        container.classList.add('visible');
+        loading.classList.remove('hidden');
+
+        // Build login URL with hint
+        const loginUrl = `${MS_LOGIN}common/oauth2/v2.0/authorize?` +
+          `client_id=51f81489-12ee-4a9e-aaae-a2591f45987d` +
+          `&response_type=code` +
+          `&redirect_uri=${encodeURIComponent(CRM_URL)}` +
+          `&login_hint=${encodeURIComponent(email)}` +
+          `&prompt=login`;
+
+        // Since iframe will be blocked by X-Frame-Options, open directly
+        // This is the real behavior - Dynamics 365 can't run in iframes due to security
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        
+        // Open CRM in a new tab or current window
+        window.location.href = CRM_URL;
+
+      }, 1200);
+    }
+
+    // Handle Enter key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const active = document.activeElement;
+        if (active.id === 'username') {
+          document.getElementById('password').focus();
+        } else if (active.id === 'password') {
+          doLogin();
+        }
+      }
+    });
+
+    // Check if already "logged in" this session
+    window.addEventListener('load', () => {
+      // Auto-focus username field
+      document.getElementById('username').focus();
+      
+      // Register service worker for PWA
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      }
+    });
+  </script>
+</body>
+</html>
